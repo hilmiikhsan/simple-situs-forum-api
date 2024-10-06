@@ -1,0 +1,5 @@
+service:
+  port: ":9876"
+
+database:
+  data_source_name: "root:secretpassword@tcp(localhost:3307)/forum"
