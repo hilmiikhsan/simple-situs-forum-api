@@ -7,6 +7,7 @@ import (
 	"github.com/hilmiikhsan/situs-forum/internal/configs"
 	membershipsHandler "github.com/hilmiikhsan/situs-forum/internal/handlers/memberships"
 	membershipsRepository "github.com/hilmiikhsan/situs-forum/internal/repository/memberships"
+	membersipsService "github.com/hilmiikhsan/situs-forum/internal/service/memberships"
 	"github.com/hilmiikhsan/situs-forum/pkg/internal_sql"
 )
 
@@ -33,9 +34,10 @@ func main() {
 		log.Fatal("failed to connect to database: ", err)
 	}
 
-	_ = membershipsRepository.NewRepository(db)
+	memberShipRepo := membershipsRepository.NewRepository(db)
+	membershipService := membersipsService.NewService(memberShipRepo)
 
-	membershipHandler := membershipsHandler.NewHandler(router)
+	membershipHandler := membershipsHandler.NewHandler(router, membershipService)
 	membershipHandler.RegisterRoute()
 
 	router.Run(cfg.Service.Port)
