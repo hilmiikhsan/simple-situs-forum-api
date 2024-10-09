@@ -1,5 +1,6 @@
 service:
   port: ":9876"
+  secret_jwt: "secretjwt"
 
 database:
   data_source_name: "root:secretpassword@tcp(localhost:3307)/forum?parseTime=true"
