@@ -31,5 +31,5 @@ func (h *Handler) RegisterRoute() {
 	route.Use(middleware.AuthMiddleware())
 
 	route.POST("/create", h.CreatePost)
-	route.POST("/comment", h.CreateComment)
+	route.POST("/comment/:post_id", h.CreateComment)
 }
