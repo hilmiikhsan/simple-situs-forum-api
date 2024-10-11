@@ -1,17 +1,17 @@
-package memberships
+package posts
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hilmiikhsan/situs-forum/internal/model/memberships"
+	"github.com/hilmiikhsan/situs-forum/internal/model/posts"
 	"github.com/rs/zerolog/log"
 )
 
-func (h *Handler) SignUp(c *gin.Context) {
+func (h *Handler) CreatePost(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var req memberships.SignUpRequest
+	var req posts.CreatePostRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error().Err(err).Msg("failed to bind json")
@@ -21,9 +21,11 @@ func (h *Handler) SignUp(c *gin.Context) {
 		return
 	}
 
-	err := h.membershipSvc.SignUp(ctx, req)
+	userID := c.GetInt64("user_id")
+
+	err := h.postSvc.CreatePost(ctx, userID, req)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to sign up")
+		log.Error().Err(err).Msg("failed to create post")
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})

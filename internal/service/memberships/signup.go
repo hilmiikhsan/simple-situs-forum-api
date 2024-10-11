@@ -6,25 +6,25 @@ import (
 	"time"
 
 	"github.com/hilmiikhsan/situs-forum/internal/model/memberships"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *service) SignUp(ctx context.Context, req memberships.SignUpRequest) error {
 	user, err := s.membershipRepo.GetUseByEmailOrUsername(ctx, req.Email, req.Username)
 	if err != nil {
-		logrus.Error("failed to get user by email or username: ", err)
+		log.Error().Err(err).Msg("failed to get user by email or username")
 		return err
 	}
 
 	if user != nil {
-		logrus.Error("username or email already exists")
+		log.Error().Msg("username or email already exists")
 		return errors.New("username or email already exists")
 	}
 
 	password, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		logrus.Error("failed to hash password: ", err)
+		log.Error().Err(err).Msg("failed to hash password")
 		return err
 	}
 

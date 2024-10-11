@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hilmiikhsan/situs-forum/internal/model/memberships"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func (h *Handler) Login(c *gin.Context) {
@@ -14,7 +14,7 @@ func (h *Handler) Login(c *gin.Context) {
 	var req memberships.LoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		logrus.Error("failed to bind json: ", err)
+		log.Error().Err(err).Msg("failed to bind json")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -23,7 +23,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	accessToken, err := h.membershipSvc.Login(ctx, req)
 	if err != nil {
-		logrus.Error("failed to login: ", err)
+		log.Error().Err(err).Msg("failed to login")
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})

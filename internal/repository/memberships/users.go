@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/hilmiikhsan/situs-forum/internal/model/memberships"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func (r *repository) GetUseByEmailOrUsername(ctx context.Context, email, username string) (*memberships.UserModel, error) {
@@ -28,11 +28,11 @@ func (r *repository) GetUseByEmailOrUsername(ctx context.Context, email, usernam
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			logrus.Error("user not found")
+			log.Error().Err(err).Msg("user not found")
 			return nil, nil
 		}
 
-		logrus.Error("failed to get user by email or username: ", err)
+		log.Error().Err(err).Msg("failed to get user by email or username")
 		return nil, err
 	}
 
@@ -50,7 +50,7 @@ func (r *repository) CreateUser(ctx context.Context, model memberships.UserModel
 		model.UpdatedBy,
 	)
 	if err != nil {
-		logrus.Error("failed to create user: ", err)
+		log.Error().Err(err).Msg("failed to insert user")
 		return err
 	}
 
