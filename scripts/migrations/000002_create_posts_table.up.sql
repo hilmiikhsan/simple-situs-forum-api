@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS posts (
     created_by LONGTEXT NOT NULL,
     updated_by LONGTEXT NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(id)
+   CONSTRAINT fk_user_id_posts FOREIGN KEY (user_id) REFERENCES users(id)
 )
