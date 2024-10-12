@@ -14,7 +14,7 @@ func (r *repository) CreatePost(ctx context.Context, model posts.PostModel) erro
 		model.UserID,
 		model.PostTitle,
 		model.PostContent,
-		model.PostHastags,
+		model.PostHashtags,
 		model.CreatedAt,
 		model.CreatedBy,
 		model.UpdatedAt,
@@ -52,7 +52,7 @@ func (r *repository) GetAllPost(ctx context.Context, limit, offset int) (posts.G
 			&username,
 			&model.PostTitle,
 			&model.PostContent,
-			&model.PostHastags,
+			&model.PostHashtags,
 		)
 		if err != nil {
 			log.Error().Err(err).Msg("failed to scan post")
@@ -65,7 +65,7 @@ func (r *repository) GetAllPost(ctx context.Context, limit, offset int) (posts.G
 			Username:     username,
 			PostTitle:    model.PostTitle,
 			PostContent:  model.PostContent,
-			PostHashtags: strings.Split(model.PostHastags, ","),
+			PostHashtags: strings.Split(model.PostHashtags, ","),
 		})
 	}
 
@@ -76,4 +76,38 @@ func (r *repository) GetAllPost(ctx context.Context, limit, offset int) (posts.G
 	}
 
 	return responses, nil
+}
+
+func (r *repository) GetPostByID(ctx context.Context, id int64) (*posts.Post, error) {
+	var (
+		model    posts.PostModel
+		username string
+		isLiked  bool
+	)
+
+	row := r.db.QueryRowContext(ctx, queryGetPostByID, id)
+
+	err := row.Scan(
+		&model.ID,
+		&model.UserID,
+		&username,
+		&model.PostTitle,
+		&model.PostContent,
+		&model.PostHashtags,
+		&isLiked,
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to scan post")
+		return nil, err
+	}
+
+	return &posts.Post{
+		ID:           model.ID,
+		UserID:       model.UserID,
+		Username:     username,
+		PostTitle:    model.PostTitle,
+		PostContent:  model.PostContent,
+		PostHashtags: strings.Split(model.PostHashtags, ","),
+		IsLiked:      isLiked,
+	}, nil
 }

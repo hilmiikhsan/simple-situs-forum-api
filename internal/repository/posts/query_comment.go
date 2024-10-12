@@ -13,4 +13,15 @@ const (
 			updated_by
 		) VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
+
+	queryGetCommentByPostID = `
+		SELECT
+			c.id,
+			c.user_id,
+			c.comment_content,
+			u.username
+		FROM comments c
+		JOIN users u ON c.user_id = u.id
+		WHERE c.post_id = ?
+	`
 )

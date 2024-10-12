@@ -17,14 +17,14 @@ func (s *service) CreatePost(ctx context.Context, userID int64, req posts.Create
 	now := time.Now()
 
 	model := posts.PostModel{
-		UserID:      userID,
-		PostTitle:   req.PostTitle,
-		PostContent: req.PostContent,
-		PostHastags: postHashtags,
-		CreatedAt:   now,
-		UpdatedAt:   now,
-		CreatedBy:   strconv.FormatInt(userID, 10),
-		UpdatedBy:   strconv.FormatInt(userID, 10),
+		UserID:       userID,
+		PostTitle:    req.PostTitle,
+		PostContent:  req.PostContent,
+		PostHashtags: postHashtags,
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		CreatedBy:    strconv.FormatInt(userID, 10),
+		UpdatedBy:    strconv.FormatInt(userID, 10),
 	}
 
 	err := s.postRepo.CreatePost(ctx, model)

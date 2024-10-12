@@ -36,4 +36,9 @@ const (
 			updated_by = ?
 		WHERE post_id = ? AND user_id = ?
 	`
+
+	queryCountLikeByPostID = `
+		SELECT COUNT(id) FROM user_activities
+		WHERE post_id = ? AND is_liked = true
+	`
 )

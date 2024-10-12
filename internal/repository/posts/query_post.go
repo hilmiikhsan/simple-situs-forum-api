@@ -28,4 +28,18 @@ const (
 		ORDER BY p.updated_at DESC
 		LIMIT ? OFFSET ?
 	`
+
+	queryGetPostByID = `
+		SELECT
+			p.id,
+			p.user_id,
+			u.username,
+			p.post_title,
+			p.post_content,
+			p.post_hashtags,
+			uv.is_liked
+		FROM posts p
+		JOIN user_activities uv ON uv.post_id = p.id
+		WHERE p.id = ?
+	`
 )

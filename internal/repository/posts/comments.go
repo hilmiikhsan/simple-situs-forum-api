@@ -24,3 +24,41 @@ func (r *repository) CreateComment(ctx context.Context, model posts.CommentModel
 
 	return nil
 }
+
+func (r *repository) GetCommentByPostID(ctx context.Context, postID int64) ([]posts.Comments, error) {
+	rows, err := r.db.QueryContext(ctx, queryGetCommentByPostID, postID)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to query comment")
+		return nil, err
+	}
+	defer rows.Close()
+
+	responses := make([]posts.Comments, 0)
+
+	for rows.Next() {
+		var (
+			comments posts.Comments
+			username string
+		)
+
+		err = rows.Scan(
+			&comments.ID,
+			&comments.UserID,
+			&username,
+			&comments.CommentContent,
+		)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to scan comment")
+			return nil, err
+		}
+
+		responses = append(responses, posts.Comments{
+			ID:             comments.ID,
+			UserID:         comments.UserID,
+			Username:       username,
+			CommentContent: comments.CommentContent,
+		})
+	}
+
+	return responses, nil
+}

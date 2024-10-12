@@ -72,3 +72,17 @@ func (r *repository) UpdateUserActivity(ctx context.Context, model posts.UserAct
 
 	return nil
 }
+
+func (r *repository) CountLikeByPostID(ctx context.Context, postID int64) (int, error) {
+	var count int
+
+	row := r.db.QueryRowContext(ctx, queryCountLikeByPostID, postID)
+
+	err := row.Scan(&count)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to count like by post id")
+		return count, err
+	}
+
+	return count, nil
+}
