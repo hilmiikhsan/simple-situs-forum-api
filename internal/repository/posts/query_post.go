@@ -14,4 +14,18 @@ const (
 			updated_by
 		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
+
+	queryGetAllPost = `
+		SELECT
+			p.id,
+			p.user_id,
+			u.username,
+			p.post_title,
+			p.post_content,
+			p.post_hashtags
+		FROM posts p
+		JOIN users u ON p.user_id = u.id
+		ORDER BY p.updated_at DESC
+		LIMIT ? OFFSET ?
+	`
 )
