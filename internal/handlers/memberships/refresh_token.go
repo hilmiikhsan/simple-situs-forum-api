@@ -8,10 +8,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (h *Handler) Login(c *gin.Context) {
+func (h *Handler) RefreshToken(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var req memberships.LoginRequest
+	var req memberships.RefreshTokenRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error().Err(err).Msg("failed to bind json")
@@ -21,19 +21,18 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, refreshToken, err := h.membershipSvc.Login(ctx, req)
+	userID := c.GetInt64("user_id")
+
+	accessToken, err := h.membershipSvc.ValidateRefreshToken(ctx, userID, req)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to login")
+		log.Error().Err(err).Msg("failed to validate refresh token")
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	response := memberships.LoginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, memberships.RefreshTokenResponse{
+		AccessToken: accessToken,
+	})
 }

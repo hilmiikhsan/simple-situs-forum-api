@@ -8,10 +8,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (r *repository) GetUseByEmailOrUsername(ctx context.Context, email, username string) (*memberships.UserModel, error) {
-	row := r.db.QueryRowContext(ctx, queryGetUserByEmailOrUsername,
+func (r *repository) GetUser(ctx context.Context, email, username string, userID int64) (*memberships.UserModel, error) {
+	row := r.db.QueryRowContext(ctx, queryGetUser,
 		email,
 		username,
+		userID,
 	)
 
 	var response memberships.UserModel
